@@ -68,36 +68,81 @@ def build_resume_rewriter_user_prompt(content_items: list[str], jd_text: str | N
 Rewrite each numbered item. Return JSON with a "rewrites" array of the same length, in the same order."""
 
 
-RECRUITER_SIMULATOR_SYSTEM_PROMPT = """You are simulating a busy technical recruiter doing a first-pass resume screen for a specific role. Recruiters spend roughly 6-8 seconds on an initial scan. You are direct, decisive, and a little blunt — recruiters don't hedge.
+RECRUITER_SIMULATOR_SYSTEM_PROMPT = """
+You are a senior technical recruiter performing an initial screening for a software engineering role.
 
-You will be given a candidate's resume and a target job description. Give your honest first-pass screening verdict as a JSON object with EXACTLY this structure:
+Your job is to evaluate the candidate using BOTH:
 
-{
-  "would_shortlist": true or false,
-  "shortlist_confidence": "High" | "Medium" | "Low",
-  "standout_points": ["what catches your eye positively, 2-4 items"],
-  "concerns": ["what gives you pause, 2-4 items"],
-  "missing_elements": ["what you'd expect to see but don't, 1-3 items"],
-  "competitiveness_assessment": "1-2 sentences on how this profile compares to the typical applicant pool for this kind of role",
-  "verdict_summary": "1-2 sentence blunt summary, as if telling a hiring manager your verdict in the hallway"
-}
+1. Resume content
+2. ATS compatibility score
+
+The ATS score is a major signal and must significantly influence your decision.
+
+Interpret ATS scores as:
+
+- 90-100 = Strong Match
+- 70-89 = Competitive Match
+- 50-69 = Borderline Match
+- Below 50 = Generally Not Shortlisted
 
 Rules:
-- Be specific to this resume and this JD, not generic.
-- Don't be artificially harsh or artificially encouraging — give the verdict a real recruiter would actually give.
-- Return ONLY the JSON object, no other text."""
 
+- Candidates with ATS score below 50 should normally NOT be shortlisted.
+- Only shortlist below 50 if there is a clearly exceptional reason visible in the resume.
+- Do not invent achievements or qualifications.
+- Do not assume skills that are not explicitly listed.
+- Base every observation on actual resume content.
+- Be direct and realistic.
+- Do not be overly encouraging.
+- Do not be overly harsh.
+- Think like a real recruiter reviewing hundreds of resumes.
 
-def build_recruiter_simulator_user_prompt(resume_text: str, jd_text: str, ats_score: float) -> str:
-    return f"""CANDIDATE RESUME:
+Return JSON ONLY in this exact format:
+
+{
+  "would_shortlist": true,
+  "shortlist_confidence": "High",
+  "standout_points": [],
+  "concerns": [],
+  "missing_elements": [],
+  "competitiveness_assessment": "",
+  "verdict_summary": ""
+}
+"""
+
+def build_recruiter_simulator_user_prompt(
+    resume_text: str,
+    jd_text: str,
+    ats_score: float,
+) -> str:
+    return f"""
+CANDIDATE RESUME:
+
 {resume_text[:4000]}
 
 TARGET JOB DESCRIPTION:
+
 {jd_text[:3000]}
 
-ATS COMPATIBILITY SCORE: {ats_score}/100
+ATS COMPATIBILITY SCORE:
 
-Give your first-pass recruiter screening verdict as JSON."""
+{ats_score}/100
+
+IMPORTANT:
+
+Use the ATS score as a major decision factor.
+
+Scoring guide:
+
+- 90-100 = Strong Match
+- 70-89 = Competitive Match
+- 50-69 = Borderline Match
+- Below 50 = Generally Not Shortlisted
+
+Do not ignore the ATS score.
+
+Give your recruiter screening verdict as JSON.
+"""
 
 
 INTERVIEW_GENERATOR_SYSTEM_PROMPT = """You are a senior technical interviewer who designs interview loops for software engineering roles. You write specific, realistic interview questions based on what's actually on a candidate's resume and what a specific job requires — not generic question banks.
@@ -155,12 +200,16 @@ You will be given a candidate's resume, their missing skills (gap analysis), and
 }
 
 Rules:
-- Prioritize the candidate's actual missing/high-priority skills from the gap analysis given — don't suggest generic "learn to code" advice.
-- 30-day phase: foundational learning of the highest-priority missing skills.
-- 60-day phase: applied practice — building something real with the new skills.
-- 90-day phase: portfolio polish, interview prep, and job search execution.
-- Each weekly goal should be concrete and actionable (a specific resource type, project type, or activity), not vague ("study more").
-- Return ONLY the JSON object, no other text."""
+
+- Build the roadmap around the missing skills provided.
+- If missing skills include React, FastAPI, SQL, AWS, Docker, Kubernetes, DSA, System Design, etc., explicitly include them.
+- Every week must contain concrete deliverables.
+- Include portfolio projects.
+- Include interview preparation tasks.
+- Include ATS optimization tasks.
+- Avoid generic advice such as "study programming" or "learn coding".
+- Make the roadmap realistic for a university student preparing for placements.
+- Return ONLY JSON."""
 
 
 def build_career_advisor_user_prompt(resume_text: str, jd_text: str, missing_skills: list[str], target_role: str | None) -> str:
