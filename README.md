@@ -115,7 +115,7 @@ spec). Recharts is installed but not yet wired into a chart — the dashboard cu
 shows real numbers in stat cards rather than a fabricated chart, since a chart with
 only 1-2 data points looks worse than no chart (see Known Limitations).
 
-**Design direction:** warm paper background, a serif display face (Fraunces) paired
+**Design direction:** warm paper background, a serif display face (Inter) paired
 with Inter for body text and JetBrains Mono for scores/skill tags — deliberately
 avoiding the neon-gradient/glassmorphism look the spec explicitly ruled out. The
 landing page's signature visual is a resume document with a scan line sweeping down

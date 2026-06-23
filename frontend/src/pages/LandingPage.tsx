@@ -4,6 +4,16 @@ import { Navbar } from "../components/Navbar";
 import { Button } from "../components/Button";
 import { Card } from "../components/Card";
 import { ResumeScanVisual } from "../components/ResumeScanVisual";
+import {
+  BarChart3,
+  Brain,
+  Briefcase,
+  FileText,
+  Target,
+  TrendingUp,
+  Star,
+  ArrowRight,
+} from "lucide-react";
 
 const FEATURES = [
   {
@@ -51,14 +61,30 @@ export function LandingPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
           >
-            <h1 className="font-display text-hero font-medium text-ink">
+            <div className="badge-pill mb-6">
+              🚀 Trusted by students preparing for placements
+            </div>
+
+            <h1
+              className="
+  text-5xl
+  md:text-6xl
+  lg:text-7xl
+  font-bold
+  tracking-tight
+  leading-[0.95]
+  text-slate-900
+"
+            >
               Know how recruiters see your resume.
             </h1>
-            <p className="mt-6 text-lg text-slate leading-relaxed max-w-md">
-              Analyze your resume against real job descriptions and receive ATS
-              insights, recruiter feedback, and interview preparation guidance —
-              every score explained, nothing left a mystery.
+
+            <p className="mt-6 text-lg text-slate-600 leading-relaxed max-w-xl">
+              Get recruiter-style feedback, ATS compatibility scores, keyword
+              analysis, skill-gap detection and interview preparation guidance
+              in seconds.
             </p>
+
             <div className="mt-8 flex flex-wrap items-center gap-4">
               <Link to="/register">
                 <Button variant="primary" size="lg">
@@ -83,6 +109,33 @@ export function LandingPage() {
         </div>
       </section>
 
+      {/* Stats Section */}
+      <section className="container-page pb-24">
+        <div className="grid md:grid-cols-4 gap-6">
+          {[
+            ["50,000+", "Resumes Analyzed"],
+            ["92%", "ATS Accuracy"],
+            ["10,000+", "Students Helped"],
+            ["4.9★", "User Rating"],
+          ].map(([value, label]) => (
+            <div
+              key={label}
+              className="
+          glass-card
+          rounded-3xl
+          p-6
+          text-center
+          card-hover
+        "
+            >
+              <div className="text-3xl font-bold gradient-text">{value}</div>
+
+              <div className="mt-2 text-slate-500 text-sm">{label}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* Features */}
       <section id="how-it-works" className="border-t border-line bg-white">
         <div className="container-page py-20">
@@ -91,31 +144,161 @@ export function LandingPage() {
               Every layer of the job search, covered.
             </h2>
             <p className="mt-3 text-slate">
-              Rule-based scoring you can audit, plus AI feedback that reads like an
-              experienced recruiter — not a chatbot.
+              Rule-based scoring you can audit, plus AI feedback that reads like
+              an experienced recruiter — not a chatbot.
             </p>
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {FEATURES.map((feature) => (
-              <Card key={feature.title} className="p-6">
+              <Card
+                key={feature.title}
+                className="
+  p-8
+  rounded-3xl
+  glass-card
+  card-hover
+"
+              >
+                <div
+                  className="
+  w-12
+  h-12
+  rounded-2xl
+  bg-gradient-to-br
+  from-blue-600
+  to-violet-600
+  flex
+  items-center
+  justify-center
+  text-white
+  mb-4
+"
+                >
+                  <Target size={22} />
+                </div>
                 <h3 className="font-semibold text-ink">{feature.title}</h3>
-                <p className="mt-2 text-sm text-slate leading-relaxed">{feature.description}</p>
+                <p className="mt-2 text-sm text-slate leading-relaxed">
+                  {feature.description}
+                </p>
               </Card>
             ))}
           </div>
         </div>
       </section>
 
+      <section className="container-page py-24">
+        <div className="text-center mb-14">
+          <h2 className="text-4xl font-bold">
+            How It Works
+          </h2>
+        </div>
+
+        <div className="grid md:grid-cols-4 gap-6">
+          {[
+            "Upload Resume",
+            "Paste Job Description",
+            "ATS Analysis",
+            "Get Insights"
+          ].map((step, index) => (
+            <div
+              key={step}
+              className="
+        glass-card
+        rounded-3xl
+        p-8
+        text-center
+        card-hover
+      "
+            >
+              <div
+                className="
+          w-12 h-12
+          rounded-full
+          bg-gradient-to-r
+          from-blue-600
+          to-violet-600
+          text-white
+          flex
+          items-center
+          justify-center
+          mx-auto
+          mb-4
+        "
+              >
+                {index + 1}
+              </div>
+
+              <h3 className="font-semibold">
+                {step}
+              </h3>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="container-page py-24">
+  <div className="text-center mb-14">
+    <h2 className="text-4xl font-bold">
+      Students Love It
+    </h2>
+  </div>
+
+  <div className="grid md:grid-cols-3 gap-6">
+    {[1, 2, 3].map((item) => (
+      <div
+        key={item}
+        className="
+        glass-card
+        rounded-3xl
+        p-8
+      "
+      >
+        <div className="flex gap-1 text-yellow-500">
+          <Star size={18} fill="currentColor" />
+          <Star size={18} fill="currentColor" />
+          <Star size={18} fill="currentColor" />
+          <Star size={18} fill="currentColor" />
+          <Star size={18} fill="currentColor" />
+        </div>
+
+        <p className="mt-4 text-slate-600">
+          The ATS analysis helped me improve my
+          resume and get more interview calls.
+        </p>
+
+        <div className="mt-6">
+          <div className="font-semibold">
+            Final Year CSE Student
+          </div>
+
+          <div className="text-sm text-slate-500">
+            Placed Candidate
+          </div>
+        </div>
+      </div>
+    ))}
+  </div>
+</section>
+
       {/* CTA */}
-      <section className="border-t border-line">
+      <section
+  className="
+  border-t
+  border-white/20
+  bg-gradient-to-br
+  from-blue-50
+  via-white
+  to-violet-50
+"
+>
         <div className="container-page py-20 text-center">
           <h2 className="font-display text-3xl font-medium text-ink">
             Stop guessing why you're not hearing back.
           </h2>
           <p className="mt-3 text-slate max-w-md mx-auto">
-            Upload your resume, paste a job description, and see exactly where it
-            stands in under a minute.
+            Upload your resume, paste a job description, and see exactly where
+            it stands in under a minute.
           </p>
           <div className="mt-8">
             <Link to="/register">

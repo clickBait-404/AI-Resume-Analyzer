@@ -1,3 +1,4 @@
+
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { Button } from "./Button";
@@ -12,29 +13,90 @@ export function Navbar() {
   };
 
   return (
-    <header className="border-b border-line bg-paper/90 backdrop-blur-sm sticky top-0 z-50">
-      <div className="container-page flex h-16 items-center justify-between">
-        <Link to="/" className="flex items-center gap-2">
-          <span className="font-display text-xl font-semibold tracking-tight">Resumeter</span>
+    <header
+      className="
+      sticky top-0 z-50
+      border-b border-white/20
+      bg-white/70
+      backdrop-blur-xl
+      shadow-[0_8px_32px_rgba(15,23,42,.04)]
+    "
+    >
+      <div className="container-page flex h-20 items-center justify-between">
+        {/* Logo */}
+        <Link to="/" className="flex items-center gap-3">
+          <div
+            className="
+            flex h-10 w-10 items-center justify-center
+            rounded-2xl
+            bg-gradient-to-br
+            from-blue-600
+            to-violet-600
+            text-white
+            font-bold
+            shadow-lg
+          "
+          >
+            R
+          </div>
+
+          <div>
+            <h1 className="font-display text-xl font-bold tracking-tight text-slate-900">
+              Resumeter
+            </h1>
+
+            <p className="text-xs text-slate-500">
+              ATS Resume Intelligence
+            </p>
+          </div>
         </Link>
 
-        <nav className="hidden md:flex items-center gap-8 text-sm text-slate">
+        {/* Desktop Navigation */}
+        <nav className="hidden md:flex items-center gap-8">
+          <Link
+            to="/"
+            className="text-sm font-medium text-slate-600 hover:text-slate-900 transition"
+          >
+            Home
+          </Link>
+
           {user && (
             <>
-              <Link to="/dashboard" className="hover:text-ink transition-colors">
+              <Link
+                to="/dashboard"
+                className="text-sm font-medium text-slate-600 hover:text-slate-900 transition"
+              >
                 Dashboard
               </Link>
-              <Link to="/analyze" className="hover:text-ink transition-colors">
-                New analysis
+
+              <Link
+                to="/analyze"
+                className="text-sm font-medium text-slate-600 hover:text-slate-900 transition"
+              >
+                Analyze Resume
               </Link>
             </>
           )}
         </nav>
 
+        {/* Right Side */}
         <div className="flex items-center gap-3">
           {user ? (
             <>
-              <span className="hidden sm:inline text-sm text-slate">{user.email}</span>
+              <div
+                className="
+                hidden sm:flex
+                items-center
+                rounded-full
+                bg-slate-100
+                px-4 py-2
+                text-sm
+                text-slate-600
+              "
+              >
+                {user.email}
+              </div>
+
               <Button variant="ghost" size="md" onClick={handleLogout}>
                 Sign out
               </Button>
@@ -46,10 +108,28 @@ export function Navbar() {
                   Sign in
                 </Button>
               </Link>
+
               <Link to="/register">
-                <Button variant="primary" size="md">
-                  Get started
-                </Button>
+                <button
+                  className="
+                  rounded-xl
+                  bg-gradient-to-r
+                  from-blue-600
+                  to-violet-600
+                  px-5
+                  py-2.5
+                  text-sm
+                  font-semibold
+                  text-white
+                  shadow-lg
+                  transition-all
+                  duration-300
+                  hover:scale-105
+                  hover:shadow-xl
+                "
+                >
+                  Get Started
+                </button>
               </Link>
             </>
           )}
