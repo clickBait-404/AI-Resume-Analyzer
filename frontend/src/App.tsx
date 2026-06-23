@@ -1,6 +1,9 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { AnimatePresence, motion } from "framer-motion";
+
 import { AuthProvider } from "./context/AuthContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
+
 import { LandingPage } from "./pages/LandingPage";
 import { LoginPage } from "./pages/LoginPage";
 import { RegisterPage } from "./pages/RegisterPage";
@@ -8,14 +11,25 @@ import { DashboardPage } from "./pages/DashboardPage";
 import { AnalyzePage } from "./pages/AnalyzePage";
 import { AnalysisResultPage } from "./pages/AnalysisResultPage";
 
-export default function App() {
+function AnimatedRoutes() {
+  const location = useLocation();
+
   return (
-    <BrowserRouter>
-      <AuthProvider>
-        <Routes>
+    <AnimatePresence mode="wait">
+      <motion.div
+  key={location.pathname}
+  initial={{ opacity: 0.98 }}
+  animate={{ opacity: 1 }}
+  exit={{ opacity: 0.98 }}
+  transition={{ duration: 0.15 }}
+>
+        <Routes location={location}>
           <Route path="/" element={<LandingPage />} />
+
           <Route path="/login" element={<LoginPage />} />
+
           <Route path="/register" element={<RegisterPage />} />
+
           <Route
             path="/dashboard"
             element={
@@ -24,6 +38,7 @@ export default function App() {
               </ProtectedRoute>
             }
           />
+
           <Route
             path="/analyze"
             element={
@@ -32,6 +47,7 @@ export default function App() {
               </ProtectedRoute>
             }
           />
+
           <Route
             path="/analysis/:id"
             element={
@@ -41,6 +57,16 @@ export default function App() {
             }
           />
         </Routes>
+      </motion.div>
+    </AnimatePresence>
+  );
+}
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <AuthProvider>
+        <AnimatedRoutes />
       </AuthProvider>
     </BrowserRouter>
   );
