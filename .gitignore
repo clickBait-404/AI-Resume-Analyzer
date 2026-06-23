@@ -24,3 +24,9 @@ dist/
 
 # Logs
 *.log
+# Uploads
+backend/uploads/
+
+# Environment files
+backend/.env
+frontend/.env
