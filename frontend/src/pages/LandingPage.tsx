@@ -4,16 +4,7 @@ import { Navbar } from "../components/Navbar";
 import { Button } from "../components/Button";
 import { Card } from "../components/Card";
 import { ResumeScanVisual } from "../components/ResumeScanVisual";
-import {
-  BarChart3,
-  Brain,
-  Briefcase,
-  FileText,
-  Target,
-  TrendingUp,
-  Star,
-  ArrowRight,
-} from "lucide-react";
+import { Target } from "lucide-react";
 
 const FEATURES = [
   {
@@ -62,7 +53,7 @@ export function LandingPage() {
             transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
           >
             <div className="badge-pill mb-6">
-              🚀 Trusted by students preparing for placements
+              🚀 AI-powered Resume Analyzer & ATS Optimizer
             </div>
 
             <h1
@@ -113,10 +104,10 @@ export function LandingPage() {
       <section className="container-page pb-24">
         <div className="grid md:grid-cols-4 gap-6">
           {[
-            ["50,000+", "Resumes Analyzed"],
-            ["92%", "ATS Accuracy"],
-            ["10,000+", "Students Helped"],
-            ["4.9★", "User Rating"],
+            ["AI", "Powered Analysis"],
+            ["ATS", "Compatibility Check"],
+            ["PDF", "Resume Parsing"],
+            ["24/7", "Instant Feedback"],
           ].map(([value, label]) => (
             <div
               key={label}
@@ -137,7 +128,7 @@ export function LandingPage() {
       </section>
 
       {/* Features */}
-      <section id="how-it-works" className="border-t border-line bg-white">
+      <section className="border-t border-line bg-white">
         <div className="container-page py-20">
           <div className="max-w-xl mb-12">
             <h2 className="font-display text-3xl font-medium text-ink">
@@ -187,7 +178,10 @@ export function LandingPage() {
         </div>
       </section>
 
-      <section className="container-page py-24">
+      <section
+        id="how-it-works"
+        className="container-page py-24"
+      >
         <div className="text-center mb-14">
           <h2 className="text-4xl font-bold">
             How It Works
@@ -237,53 +231,9 @@ export function LandingPage() {
         </div>
       </section>
 
-      <section className="container-page py-24">
-  <div className="text-center mb-14">
-    <h2 className="text-4xl font-bold">
-      Students Love It
-    </h2>
-  </div>
-
-  <div className="grid md:grid-cols-3 gap-6">
-    {[1, 2, 3].map((item) => (
-      <div
-        key={item}
-        className="
-        glass-card
-        rounded-3xl
-        p-8
-      "
-      >
-        <div className="flex gap-1 text-yellow-500">
-          <Star size={18} fill="currentColor" />
-          <Star size={18} fill="currentColor" />
-          <Star size={18} fill="currentColor" />
-          <Star size={18} fill="currentColor" />
-          <Star size={18} fill="currentColor" />
-        </div>
-
-        <p className="mt-4 text-slate-600">
-          The ATS analysis helped me improve my
-          resume and get more interview calls.
-        </p>
-
-        <div className="mt-6">
-          <div className="font-semibold">
-            Final Year CSE Student
-          </div>
-
-          <div className="text-sm text-slate-500">
-            Placed Candidate
-          </div>
-        </div>
-      </div>
-    ))}
-  </div>
-</section>
-
       {/* CTA */}
       <section
-  className="
+        className="
   border-t
   border-white/20
   bg-gradient-to-br
@@ -291,7 +241,7 @@ export function LandingPage() {
   via-white
   to-violet-50
 "
->
+      >
         <div className="container-page py-20 text-center">
           <h2 className="font-display text-3xl font-medium text-ink">
             Stop guessing why you're not hearing back.
