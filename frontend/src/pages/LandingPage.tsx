@@ -260,6 +260,7 @@ export function LandingPage() {
         </div>
       </section>
 
+
       <footer className="border-t border-line">
         <div className="container-page py-8 text-sm text-slate-light flex items-center justify-between">
           <span>Resumeter</span>

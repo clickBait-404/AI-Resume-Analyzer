@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import type { ReactNode } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { Navbar } from "../components/Navbar";
 import { Card } from "../components/Card";
@@ -18,6 +18,8 @@ import {
 } from "lucide-react";
 
 export function DashboardPage() {
+  const navigate = useNavigate();
+
   const [data, setData] = useState<DashboardData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -155,6 +157,14 @@ export function DashboardPage() {
                     {data.recent_analyses.map((analysis) => (
                       <div
                         key={analysis.id}
+                        onClick={() => navigate(`/analysis/${analysis.id}`)}
+                        role="button"
+                        tabIndex={0}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" || e.key === " ") {
+                            navigate(`/analysis/${analysis.id}`);
+                          }
+                        }}
                         className="
                           flex
                           items-center
@@ -165,6 +175,7 @@ export function DashboardPage() {
                           p-4
                           hover:bg-slate-50
                           transition-all
+                          cursor-pointer
                         "
                       >
                         <div>
