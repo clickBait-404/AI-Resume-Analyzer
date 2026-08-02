@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import clsx from "clsx";
 import { Navbar } from "../components/Navbar";
@@ -36,6 +36,13 @@ export function AnalysisResultPage() {
   const [interviewQuestions, setInterviewQuestions] = useState<any>(null);
   const [recruiterSimulation, setRecruiterSimulation] = useState<any>(null);
 
+  // Refs to each result section so we can scroll to them once data lands.
+  // Placed on a wrapping <div> (not the Card itself) so this works
+  // regardless of whether Card forwards refs.
+  const roadmapRef = useRef<HTMLDivElement | null>(null);
+  const interviewRef = useRef<HTMLDivElement | null>(null);
+  const recruiterRef = useRef<HTMLDivElement | null>(null);
+
   useEffect(() => {
     if (!id) return;
     api.analysis
@@ -44,6 +51,25 @@ export function AnalysisResultPage() {
       .catch((err) => setError(extractErrorMessage(err)))
       .finally(() => setIsLoading(false));
   }, [id]);
+
+  // Scroll to each section as soon as its data becomes available
+  useEffect(() => {
+    if (roadmap) {
+      roadmapRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [roadmap]);
+
+  useEffect(() => {
+    if (interviewQuestions) {
+      interviewRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [interviewQuestions]);
+
+  useEffect(() => {
+    if (recruiterSimulation) {
+      recruiterRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [recruiterSimulation]);
 
   const generateRoadmap = async () => {
     if (!result) return;
@@ -127,40 +153,49 @@ export function AnalysisResultPage() {
               <div className="grid md:grid-cols-3 gap-4">
                 <button
                   onClick={generateRecruiterSimulation}
-                  className="rounded-3xl border p-6 text-left hover:border-blue-500 transition"
+                  disabled={loadingTool === "recruiter"}
+                  className="rounded-3xl border p-6 text-left hover:border-blue-500 transition disabled:opacity-60 disabled:cursor-not-allowed"
                 >
                   <Briefcase className="mb-4 text-blue-600" />
                   <h3 className="font-semibold">
                     Recruiter Simulation
                   </h3>
                   <p className="text-sm text-slate-500 mt-2">
-                    View hiring manager feedback.
+                    {loadingTool === "recruiter"
+                      ? "Generating..."
+                      : "View hiring manager feedback."}
                   </p>
                 </button>
 
                 <button
                   onClick={generateInterviewQuestions}
-                  className="rounded-3xl border p-6 text-left hover:border-blue-500 transition"
+                  disabled={loadingTool === "interview"}
+                  className="rounded-3xl border p-6 text-left hover:border-blue-500 transition disabled:opacity-60 disabled:cursor-not-allowed"
                 >
                   <MessageSquare className="mb-4 text-blue-600" />
                   <h3 className="font-semibold">
                     Interview Questions
                   </h3>
                   <p className="text-sm text-slate-500 mt-2">
-                    Generate role-specific questions.
+                    {loadingTool === "interview"
+                      ? "Generating..."
+                      : "Generate role-specific questions."}
                   </p>
                 </button>
 
                 <button
                   onClick={generateRoadmap}
-                  className="rounded-3xl border p-6 text-left hover:border-blue-500 transition"
+                  disabled={loadingTool === "roadmap"}
+                  className="rounded-3xl border p-6 text-left hover:border-blue-500 transition disabled:opacity-60 disabled:cursor-not-allowed"
                 >
                   <GraduationCap className="mb-4 text-blue-600" />
                   <h3 className="font-semibold">
                     30/60/90 Roadmap
                   </h3>
                   <p className="text-sm text-slate-500 mt-2">
-                    Personalized improvement plan.
+                    {loadingTool === "roadmap"
+                      ? "Generating..."
+                      : "Personalized improvement plan."}
                   </p>
                 </button>
               </div>
@@ -169,175 +204,182 @@ export function AnalysisResultPage() {
             {result.ai_review && <AIReviewSection result={result} />}
 
             {roadmap && (
-              <Card className="p-8 mt-8">
-                <h2 className="text-2xl font-bold mb-6">
-                  30 / 60 / 90 Day Roadmap
-                </h2>
+              <div ref={roadmapRef}>
+                <Card className="p-8 mt-8">
+                  <h2 className="text-2xl font-bold mb-6">
+                    30 / 60 / 90 Day Roadmap
+                  </h2>
 
-                <div className="grid md:grid-cols-3 gap-6">
-                  <div>
-                    <h3 className="font-semibold text-blue-600 mb-3">
-                      30 Days
-                    </h3>
+                  <div className="grid md:grid-cols-3 gap-6">
+                    <div>
+                      <h3 className="font-semibold text-blue-600 mb-3">
+                        30 Days
+                      </h3>
 
-                    {roadmap.plan_30_day.weekly_goals.map(
-                      (goal: string, i: number) => (
-                        <p key={i} className="text-sm mb-2">
-                          • {goal}
-                        </p>
-                      )
-                    )}
+                      {roadmap.plan_30_day.weekly_goals.map(
+                        (goal: string, i: number) => (
+                          <p key={i} className="text-sm mb-2">
+                            • {goal}
+                          </p>
+                        )
+                      )}
+                    </div>
+
+                    <div>
+                      <h3 className="font-semibold text-violet-600 mb-3">
+                        60 Days
+                      </h3>
+
+                      {roadmap.plan_60_day.weekly_goals.map(
+                        (goal: string, i: number) => (
+                          <p key={i} className="text-sm mb-2">
+                            • {goal}
+                          </p>
+                        )
+                      )}
+                    </div>
+
+                    <div>
+                      <h3 className="font-semibold text-green-600 mb-3">
+                        90 Days
+                      </h3>
+
+                      {roadmap.plan_90_day.weekly_goals.map(
+                        (goal: string, i: number) => (
+                          <p key={i} className="text-sm mb-2">
+                            • {goal}
+                          </p>
+                        )
+                      )}
+                    </div>
                   </div>
-
-                  <div>
-                    <h3 className="font-semibold text-violet-600 mb-3">
-                      60 Days
-                    </h3>
-
-                    {roadmap.plan_60_day.weekly_goals.map(
-                      (goal: string, i: number) => (
-                        <p key={i} className="text-sm mb-2">
-                          • {goal}
-                        </p>
-                      )
-                    )}
-                  </div>
-
-                  <div>
-                    <h3 className="font-semibold text-green-600 mb-3">
-                      90 Days
-                    </h3>
-
-                    {roadmap.plan_90_day.weekly_goals.map(
-                      (goal: string, i: number) => (
-                        <p key={i} className="text-sm mb-2">
-                          • {goal}
-                        </p>
-                      )
-                    )}
-                  </div>
-                </div>
-              </Card>
+                </Card>
+              </div>
             )}
+
             {interviewQuestions && (
-  <Card className="p-8 mt-8">
-    <h2 className="text-2xl font-bold mb-6">
-      Interview Questions
-    </h2>
+              <div ref={interviewRef}>
+                <Card className="p-8 mt-8">
+                  <h2 className="text-2xl font-bold mb-6">
+                    Interview Questions
+                  </h2>
 
-    <div className="space-y-6">
-      {interviewQuestions.questions.map((q: any, index: number) => (
-        <div
-          key={index}
-          className="border border-slate-200 rounded-2xl p-5"
-        >
-          <div className="flex gap-3 mb-3">
-            <span className="px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-semibold">
-              {q.category}
-            </span>
+                  <div className="space-y-6">
+                    {interviewQuestions.questions.map((q: any, index: number) => (
+                      <div
+                        key={index}
+                        className="border border-slate-200 rounded-2xl p-5"
+                      >
+                        <div className="flex gap-3 mb-3">
+                          <span className="px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-semibold">
+                            {q.category}
+                          </span>
 
-            <span className="px-3 py-1 rounded-full bg-violet-100 text-violet-700 text-xs font-semibold">
-              {q.difficulty}
-            </span>
-          </div>
+                          <span className="px-3 py-1 rounded-full bg-violet-100 text-violet-700 text-xs font-semibold">
+                            {q.difficulty}
+                          </span>
+                        </div>
 
-          <h3 className="font-semibold text-slate-900 mb-3">
-            {q.question}
-          </h3>
+                        <h3 className="font-semibold text-slate-900 mb-3">
+                          {q.question}
+                        </h3>
 
-          <div>
-            <p className="font-medium mb-2">
-              Expected Answer Points
-            </p>
+                        <div>
+                          <p className="font-medium mb-2">
+                            Expected Answer Points
+                          </p>
 
-            <ul className="space-y-1 text-sm text-slate-600">
-              {q.expected_answer_points.map(
-                (point: string, i: number) => (
-                  <li key={i}>• {point}</li>
-                )
-              )}
-            </ul>
-          </div>
+                          <ul className="space-y-1 text-sm text-slate-600">
+                            {q.expected_answer_points.map(
+                              (point: string, i: number) => (
+                                <li key={i}>• {point}</li>
+                              )
+                            )}
+                          </ul>
+                        </div>
 
-          <div className="mt-4 text-sm text-slate-500">
-            <strong>Follow-up:</strong>{" "}
-            {q.follow_up_question}
-          </div>
-        </div>
-      ))}
-    </div>
-  </Card>
-)}
+                        <div className="mt-4 text-sm text-slate-500">
+                          <strong>Follow-up:</strong>{" "}
+                          {q.follow_up_question}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </Card>
+              </div>
+            )}
 
-{recruiterSimulation && (
-  <Card className="p-8 mt-8">
-    <h2 className="text-2xl font-bold mb-6">
-      Recruiter Simulation
-    </h2>
+            {recruiterSimulation && (
+              <div ref={recruiterRef}>
+                <Card className="p-8 mt-8">
+                  <h2 className="text-2xl font-bold mb-6">
+                    Recruiter Simulation
+                  </h2>
 
-    <div className="space-y-5">
-      <div>
-        <span
-          className={`px-4 py-2 rounded-full text-sm font-semibold ${
-            recruiterSimulation.would_shortlist
-              ? "bg-green-100 text-green-700"
-              : "bg-red-100 text-red-700"
-          }`}
-        >
-          {recruiterSimulation.would_shortlist
-            ? "Shortlisted"
-            : "Rejected"}
-        </span>
-      </div>
+                  <div className="space-y-5">
+                    <div>
+                      <span
+                        className={`px-4 py-2 rounded-full text-sm font-semibold ${
+                          recruiterSimulation.would_shortlist
+                            ? "bg-green-100 text-green-700"
+                            : "bg-red-100 text-red-700"
+                        }`}
+                      >
+                        {recruiterSimulation.would_shortlist
+                          ? "Shortlisted"
+                          : "Rejected"}
+                      </span>
+                    </div>
 
-      <div>
-        <h3 className="font-semibold mb-2">
-          Confidence
-        </h3>
+                    <div>
+                      <h3 className="font-semibold mb-2">
+                        Confidence
+                      </h3>
 
-        <p>{recruiterSimulation.shortlist_confidence}</p>
-      </div>
+                      <p>{recruiterSimulation.shortlist_confidence}</p>
+                    </div>
 
-      <div>
-        <h3 className="font-semibold mb-2">
-          Standout Points
-        </h3>
+                    <div>
+                      <h3 className="font-semibold mb-2">
+                        Standout Points
+                      </h3>
 
-        <ul className="space-y-1">
-          {recruiterSimulation.standout_points.map(
-            (item: string, i: number) => (
-              <li key={i}>• {item}</li>
-            )
-          )}
-        </ul>
-      </div>
+                      <ul className="space-y-1">
+                        {recruiterSimulation.standout_points.map(
+                          (item: string, i: number) => (
+                            <li key={i}>• {item}</li>
+                          )
+                        )}
+                      </ul>
+                    </div>
 
-      <div>
-        <h3 className="font-semibold mb-2">
-          Concerns
-        </h3>
+                    <div>
+                      <h3 className="font-semibold mb-2">
+                        Concerns
+                      </h3>
 
-        <ul className="space-y-1">
-          {recruiterSimulation.concerns.map(
-            (item: string, i: number) => (
-              <li key={i}>• {item}</li>
-            )
-          )}
-        </ul>
-      </div>
+                      <ul className="space-y-1">
+                        {recruiterSimulation.concerns.map(
+                          (item: string, i: number) => (
+                            <li key={i}>• {item}</li>
+                          )
+                        )}
+                      </ul>
+                    </div>
 
-      <div>
-        <h3 className="font-semibold mb-2">
-          Verdict
-        </h3>
+                    <div>
+                      <h3 className="font-semibold mb-2">
+                        Verdict
+                      </h3>
 
-        <p className="text-slate-600">
-          {recruiterSimulation.verdict_summary}
-        </p>
-      </div>
-    </div>
-  </Card>
-)}
+                      <p className="text-slate-600">
+                        {recruiterSimulation.verdict_summary}
+                      </p>
+                    </div>
+                  </div>
+                </Card>
+              </div>
+            )}
           </>
         )}
       </div>
@@ -609,4 +651,3 @@ function AIReviewSection({ result }: { result: AnalysisResult }) {
     </Card>
   );
 }
-
