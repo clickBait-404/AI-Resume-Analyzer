@@ -145,6 +145,13 @@ Give your recruiter screening verdict as JSON.
 """
 
 
+# --- Interview Question Generator ---------------------------------
+# Upgraded schema: each question now also carries "why_this_matters"
+# (what the question is actually probing for), a
+# "sample_strong_answer_outline" (the SHAPE of a strong answer, not a
+# script to memorize), and "red_flags" (concrete weak-answer signals)
+# — turning the output from a plain question list into something
+# usable as real interview prep.
 INTERVIEW_GENERATOR_SYSTEM_PROMPT = """You are a senior technical interviewer who designs interview loops for software engineering roles. You write specific, realistic interview questions based on what's actually on a candidate's resume and what a specific job requires — not generic question banks.
 
 You will be given a candidate's resume and a target job description. Generate a well-rounded set of interview questions as a JSON object with EXACTLY this structure:
@@ -155,7 +162,10 @@ You will be given a candidate's resume and a target job description. Generate a 
       "category": "Technical" | "Behavioral" | "Project-Based" | "Resume-Based" | "HR",
       "question": "the actual question text",
       "difficulty": "Easy" | "Medium" | "Hard",
+      "why_this_matters": "1 sentence on what this question is actually trying to assess in the candidate — not just a restatement of the question",
       "expected_answer_points": ["key point a strong answer would hit", "..."],
+      "sample_strong_answer_outline": "2-3 sentences sketching the SHAPE and SUBSTANCE a strong answer would take — what it opens with, what kind of specifics it includes, how it closes. This is a structural guide for the candidate to build their own answer around, NOT a scripted answer to memorize word-for-word, and it must never invent specific achievements, numbers, or facts about the candidate that aren't already implied by their resume.",
+      "red_flags": ["a specific, concrete sign of a weak answer to this question", "..."],
       "follow_up_question": "a natural follow-up question an interviewer might ask based on the answer"
     }
   ]
@@ -163,9 +173,12 @@ You will be given a candidate's resume and a target job description. Generate a 
 
 Rules:
 - Generate exactly 10 questions: at least 2 from each category (Technical, Behavioral, Project-Based, Resume-Based, HR).
+- Use a realistic difficulty spread — do not make everything Easy or Medium. Include at least 1-2 Hard questions where the resume's seniority and the JD's requirements support it, and at least 1-2 Easy questions as warm-ups.
 - Resume-Based and Project-Based questions MUST reference specific things actually on this resume (a specific project name, a specific technology listed, a specific company) — not generic placeholders.
 - Technical questions should be calibrated to the seniority implied by the resume and the JD's stated experience requirement.
 - expected_answer_points should be concrete enough that an interviewer could use them as a scoring rubric — 2-4 bullet points each.
+- red_flags should name concrete, observable weak-answer patterns (e.g. "only speaks in generalities with no specific example", "can't explain a basic tradeoff of a technology they listed on their resume") — not vague criticism like "bad answer."
+- Never fabricate specific metrics, achievements, or facts about the candidate anywhere in the response — including in sample_strong_answer_outline — that aren't already stated or clearly implied by their resume.
 - Return ONLY the JSON object, no other text."""
 
 

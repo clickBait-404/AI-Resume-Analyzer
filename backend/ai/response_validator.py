@@ -75,6 +75,15 @@ VALID_DIFFICULTIES = {"Easy", "Medium", "Hard"}
 
 
 def validate_interview_questions(data: dict) -> bool:
+    """
+    Upgraded schema: each question now also requires
+    "why_this_matters" (str) and "red_flags" (list) alongside the
+    original fields. "sample_strong_answer_outline" is validated as a
+    string when present, but is treated as optional here so that
+    older cached/mock responses generated before this upgrade don't
+    hard-fail validation — the generator itself always includes it
+    going forward.
+    """
     if not isinstance(data, dict):
         return False
     if "questions" not in data or not isinstance(data["questions"], list):
@@ -84,7 +93,15 @@ def validate_interview_questions(data: dict) -> bool:
     for q in data["questions"]:
         if not isinstance(q, dict):
             return False
-        required = {"category", "question", "difficulty", "expected_answer_points", "follow_up_question"}
+        required = {
+            "category",
+            "question",
+            "difficulty",
+            "why_this_matters",
+            "expected_answer_points",
+            "red_flags",
+            "follow_up_question",
+        }
         if not required.issubset(q.keys()):
             return False
         if q["category"] not in VALID_INTERVIEW_CATEGORIES:
@@ -93,7 +110,13 @@ def validate_interview_questions(data: dict) -> bool:
             return False
         if not isinstance(q["question"], str) or not isinstance(q["follow_up_question"], str):
             return False
+        if not isinstance(q["why_this_matters"], str):
+            return False
         if not isinstance(q["expected_answer_points"], list):
+            return False
+        if not isinstance(q["red_flags"], list):
+            return False
+        if "sample_strong_answer_outline" in q and not isinstance(q["sample_strong_answer_outline"], str):
             return False
     return True
 
