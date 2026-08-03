@@ -6,6 +6,13 @@ and a list of aliases/variants that should resolve to it.
 This is intentionally a Python data file (not hardcoded in services)
 so it can be extended or eventually moved into the `skills` DB table
 without changing any matching logic.
+
+IMPORTANT: aliases must not be ordinary English words on their own
+(e.g. "rest", "restful", "go") — the extractor does exact word-boundary
+matching, so a bare common word will false-positive on unrelated text
+like "the rest of the team" or "go over the requirements". Prefer
+multi-word or clearly technical-only aliases. See skill_extractor.py
+for the matching logic and its plural-handling behavior.
 """
 
 SKILL_TAXONOMY: list[dict] = [
@@ -16,7 +23,14 @@ SKILL_TAXONOMY: list[dict] = [
     {"canonical_name": "Java", "category": "language", "aliases": ["java"]},
     {"canonical_name": "C++", "category": "language", "aliases": ["c++", "cpp"]},
     {"canonical_name": "C#", "category": "language", "aliases": ["c#", "csharp", "c sharp"]},
-    {"canonical_name": "Go", "category": "language", "aliases": ["golang", "go"]},
+    # NOTE: bare "go" removed — it's a common English word ("go over",
+    # "go live") and would false-positive on any resume/JD containing it.
+    # This means a resume that says only "Go" (not "GoLang") for the
+    # language won't be detected. If you want that covered, the safer
+    # option is a case-sensitive, whole-word-only check for capital "Go"
+    # done separately from this generic case-insensitive engine, not a
+    # bare alias here.
+    {"canonical_name": "Go", "category": "language", "aliases": ["golang"]},
     {"canonical_name": "Rust", "category": "language", "aliases": ["rust"]},
     {"canonical_name": "SQL", "category": "language", "aliases": ["sql"]},
     {"canonical_name": "C", "category": "language", "aliases": ["c programming", "c language"]},
@@ -65,7 +79,11 @@ SKILL_TAXONOMY: list[dict] = [
     {"canonical_name": "Linux", "category": "tool", "aliases": ["linux", "unix"]},
 
     # APIs / Architecture
-    {"canonical_name": "REST API", "category": "concept", "aliases": ["rest api", "restful", "rest", "restful api"]},
+    # NOTE: bare "rest" and "restful" removed — both are ordinary English
+    # words ("the rest of the team", "a restful weekend") and would
+    # false-positive constantly. Only multi-word, unambiguous forms remain.
+    # The extractor's optional trailing-"s" handling covers "REST APIs".
+    {"canonical_name": "REST API", "category": "concept", "aliases": ["rest api", "restful api"]},
     {"canonical_name": "GraphQL", "category": "concept", "aliases": ["graphql"]},
     {"canonical_name": "Microservices", "category": "concept", "aliases": ["microservices", "microservice architecture"]},
     {"canonical_name": "System Design", "category": "concept", "aliases": ["system design"]},
