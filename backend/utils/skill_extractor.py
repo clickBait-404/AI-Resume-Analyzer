@@ -22,8 +22,13 @@ for entry in SKILL_TAXONOMY:
     for alias in entry["aliases"]:
         # Escape regex special chars (e.g. "C++", "C#", ".NET") then
         # apply word-boundary-ish matching that still works for symbols.
+        # The trailing "s?" lets a singular alias also match its plural
+        # form (e.g. "REST API" alias matches "REST APIs" in text) —
+        # without this, any multi-word alias silently fails to match
+        # the plural, since "s" glued directly onto the last word (no
+        # space) trips the negative lookahead boundary check.
         escaped = re.escape(alias.strip())
-        pattern = re.compile(rf"(?<![A-Za-z0-9]){escaped}(?![A-Za-z0-9])", re.IGNORECASE)
+        pattern = re.compile(rf"(?<![A-Za-z0-9]){escaped}s?(?![A-Za-z0-9])", re.IGNORECASE)
         _COMPILED_PATTERNS.append((entry["canonical_name"], alias, pattern))
 
 # Sort so longer aliases are tried first (avoids "C" matching inside "C++").
