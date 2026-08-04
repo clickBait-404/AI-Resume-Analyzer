@@ -42,7 +42,7 @@ export function Navbar() {
 
           <div>
             <h1 className="font-display text-xl font-bold tracking-tight text-slate-900">
-              Resumeter
+              AI-Resume-Analyzer
             </h1>
 
             <p className="text-xs text-slate-500">

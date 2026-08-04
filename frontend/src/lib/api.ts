@@ -13,16 +13,18 @@ import type {
 
 const TOKEN_KEY = "ats_access_token";
 
+// sessionStorage (not localStorage) so the token is cleared automatically
+// when the browser/tab is closed — requiring a fresh login on next launch.
 export function getToken(): string | null {
-  return localStorage.getItem(TOKEN_KEY);
+  return sessionStorage.getItem(TOKEN_KEY);
 }
 
 export function setToken(token: string): void {
-  localStorage.setItem(TOKEN_KEY, token);
+  sessionStorage.setItem(TOKEN_KEY, token);
 }
 
 export function clearToken(): void {
-  localStorage.removeItem(TOKEN_KEY);
+  sessionStorage.removeItem(TOKEN_KEY);
 }
 
 const client: AxiosInstance = axios.create({

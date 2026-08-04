@@ -4,6 +4,7 @@ import { Navbar } from "../components/Navbar";
 import { Button } from "../components/Button";
 import { Card } from "../components/Card";
 import { ResumeScanVisual } from "../components/ResumeScanVisual";
+import { useAuth } from "../context/AuthContext";
 import { Target } from "lucide-react";
 
 const FEATURES = [
@@ -40,6 +41,8 @@ const FEATURES = [
 ];
 
 export function LandingPage() {
+  const { user } = useAuth();
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
@@ -77,7 +80,7 @@ export function LandingPage() {
             </p>
 
             <div className="mt-8 flex flex-wrap items-center gap-4">
-              <Link to="/register">
+              <Link to={user ? "/analyze" : "/register"}>
                 <Button variant="primary" size="lg">
                   Analyze your resume
                 </Button>
@@ -251,7 +254,7 @@ export function LandingPage() {
             it stands in under a minute.
           </p>
           <div className="mt-8">
-            <Link to="/register">
+            <Link to={user ? "/analyze" : "/register"}>
               <Button variant="primary" size="lg">
                 Get started — it's free
               </Button>
@@ -260,10 +263,9 @@ export function LandingPage() {
         </div>
       </section>
 
-
       <footer className="border-t border-line">
         <div className="container-page py-8 text-sm text-slate-light flex items-center justify-between">
-          <span>Resumeter</span>
+          <span>AI-Resume-Analyzer</span>
           <span>Rule-based ATS scoring. No black boxes.</span>
         </div>
       </footer>
