@@ -514,18 +514,5 @@ GROQ_MODEL=llama-3.3-70b-versatile
 
 ---
 
-# Screenshots
 
-_Screenshots coming soon._
-
----
-
-# Future Improvements
-
-* Resume Version Comparison
-* PDF Report Export
-* Cover Letter Generator
-* Job Recommendation Engine
-
----
 
