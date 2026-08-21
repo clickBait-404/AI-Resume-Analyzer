@@ -24,8 +24,6 @@ The platform helps students, job seekers, and professionals understand how well 
 - [Implemented Pages](#implemented-pages)
 - [API Endpoints](#api-endpoints)
 - [Setup](#setup)
-- [Screenshots](#screenshots)
-- [Future Improvements](#future-improvements)
 
 ---
 
